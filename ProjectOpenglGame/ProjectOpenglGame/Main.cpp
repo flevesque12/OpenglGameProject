@@ -1,12 +1,13 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 #include <iostream>
+#include "stb_image.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
-
+/*
 int main() {
 	
 	float vertices[] = {
@@ -93,3 +94,7 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 }
+*/
+
+
+
