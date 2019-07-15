@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
+#include "VertexArray.h"
 #include <iostream>
 #include "stb_image.h"
 
@@ -7,14 +8,31 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
-/*
+
 int main() {
 	
 	float vertices[] = {
-	-0.5f, -0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	 0.0f,  0.5f, 0.0f
+   -0.5f,  0.5f, 0.0f,
+	0.5f,  0.5f, 0.0f,
+	0.5f, -0.5f, 0.0f,
+	0.5f, -0.5f, 0.0f,
+   -0.5f, -0.5f, 0.0f,
+   -0.5f,  0.5f, 0.0f,
 	};
+
+	float vertexBuffer[] = {
+   -0.5f,   0.5f, 0.0f, // vertex 0
+	0.5f,   0.5f, 0.0f, // vertex 1
+	0.5f,  -0.5f, 0.0f, // vertex 2
+	-0.5f, -0.5f, 0.0f  // vertex 3
+	};
+
+	unsigned int indexBuffer[] = {
+	   0, 1, 2,
+	   2, 3, 0
+	};
+
+
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -54,6 +72,9 @@ int main() {
 	GLfloat deltaTime = 0.0f;
 	GLfloat lastFrame = 0.0f;
 
+	//create vertex array
+	VertexArray *mVertex = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		// calculate delta time
@@ -73,7 +94,7 @@ int main() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-
+		
 		
 
 		//swap the buffer
@@ -94,7 +115,7 @@ void processInput(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 }
-*/
+
 
 
 

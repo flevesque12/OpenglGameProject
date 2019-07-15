@@ -11,6 +11,9 @@ using std::string;
 
 /*
 	I used some element of the shader programm from learnopengl.com
+	1. Load and compile the vertex shader.
+	2. Load and compile the fragment shader.
+	3. Link the two shaders together into a “shader program.”
 */
 
 class Shader {

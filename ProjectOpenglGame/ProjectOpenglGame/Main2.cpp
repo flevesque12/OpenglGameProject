@@ -39,7 +39,7 @@ This place is a refresh of important functionality used in video game programmin
 		MessageBox(NULL, (LPCWSTR)"\tHello World!", (LPCWSTR)"My first windows app", NULL);
 		return 0;
 	}*/
-
+namespace Main1{
 	//example of assert error 
 	void TestFunctionError(int number) {
 		
@@ -94,5 +94,5 @@ This place is a refresh of important functionality used in video game programmin
 		//three type of template class templates, function templates, and variable	templates
 		return 0;
 	}
-//}
+}
 
