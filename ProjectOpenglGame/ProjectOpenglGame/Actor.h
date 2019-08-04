@@ -1,7 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
-#include <glm/trigonometric.hpp>
 #include <vector>
+#include "Component.h"
+#include "Game.h"
 
 class Actor {
 public:
@@ -28,6 +29,8 @@ public:
 	void AddComponent(class Component* component);
 	void RemoveComponents(class Component* component);
 
+	State GetState() const { return m_State; }
+
 private:
 	State m_State;
 
@@ -39,7 +42,7 @@ private:
 	
 	//rotation
 	float m_Rotation;
-
+	
 	//component held by this actor
 	std::vector<class Component*> m_Components;
 	class Game* m_Game;

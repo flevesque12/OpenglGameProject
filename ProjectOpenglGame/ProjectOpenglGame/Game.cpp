@@ -48,6 +48,7 @@ bool Game::Init()
 	{
 		return true;
 	}	
+	
 }
 
 void Game::RunLoop(){
@@ -58,17 +59,43 @@ void Game::RunLoop(){
 	}
 }
 
-
-void Game::Shutdown(){
-	glfwTerminate();
-	glfwDestroyWindow(m_Window);
-}
-
-
 //private function
 void Game::UpdateGame()
 {
 
+	//compute delta time
+	float currentFrame = glfwGetTime();
+	m_DeltaTime = (currentFrame - m_LastFrame)/1000;
+	m_LastFrame = currentFrame;
+
+	//update all actors
+	m_UpdatingActors = true;
+
+	for (auto actor : m_Actors) {
+		actor->Update(m_DeltaTime);
+	}
+
+	m_UpdatingActors = false;
+
+	//move any pending actors to m_Actors
+	for (auto pending : m_pendingActors) {
+		m_Actors.emplace_back(pending);
+	}
+	//erase them when they are already added to m_Actors
+	m_pendingActors.clear();
+
+	//add any dead actors to a temp vector
+	std::vector<Actor*> deadActors;
+	for (auto actor : m_Actors) {
+		if (actor->GetState() == Actor::EDead) {
+			deadActors.emplace_back(actor);
+		}
+	}
+
+	//delete dead actors (remove them from the m_actors)
+	for (auto actor : deadActors) {
+		delete actor;
+	}
 }
 
 
@@ -85,5 +112,35 @@ void Game::ProcessInput()
 
 void Game::GenerateOuput()
 {
+	//rendering here
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
 
+
+
+
+	//swap the buffer
+	glfwSwapBuffers(m_Window);
+}
+
+void Game::AddActor(Actor* actor) {
+	//if updating the actor, need to add to the pending
+	if (m_UpdatingActors) {
+		m_pendingActors.emplace_back(actor);
+	}
+	else
+	{
+		m_Actors.emplace_back(actor);
+	}
+}
+
+void Game::Shutdown() {
+	while (!m_Actors.empty())
+	{
+		delete m_Actors.back();
+	}
+
+	glfwTerminate();
+	glfwDestroyWindow(m_Window);
+	glfwDestroyWindow(m_Window);
 }

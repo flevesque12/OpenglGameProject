@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_set>
+#include "Component.h"
 
 /*
 	In this class we wil going to use the component pattern
@@ -11,5 +12,5 @@ public:
 	void RemoveComponent();
 
 private:
-	//std::unordered_set<Component*> m_Components;
+	std::unordered_set<Component*> m_Components;
 };

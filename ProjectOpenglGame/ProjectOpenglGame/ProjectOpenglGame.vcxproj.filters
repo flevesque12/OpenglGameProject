@@ -42,6 +42,9 @@
     <ClCompile Include="mainLoop.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -79,10 +82,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Basic.vert">
+    <None Include="Basic.frag">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Basic.frag">
+    <None Include="Basic.vert">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>
