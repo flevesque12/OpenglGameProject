@@ -8,6 +8,10 @@ out vec3 ourColor; //specify a color output to the fragment shader
 //for now it a position
 out vec3 ourPosition;
 
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
 uniform float xOffset;
 
 void main(){
@@ -17,7 +21,7 @@ void main(){
 	//output processed stuff to output variable
 
 	//directly pass along inPosition to gl_Position
-	gl_Position = vec4(aPos.x + xOffset, aPos.y, aPos.z, 1.0); //see how we give a vec3 to vec4 is constructor
+	gl_Position = projection * view * model * vec4(aPos, 1.0f); //see how we give a vec3 to vec4 is constructor
 	//ourColor = aColor; //set the output variable to a dark red color
 	ourPosition = aPos;
 }

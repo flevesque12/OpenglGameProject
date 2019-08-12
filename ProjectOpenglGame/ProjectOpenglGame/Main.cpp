@@ -1,5 +1,9 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
+#include "glm/glm/glm.hpp"
+#include "glm/glm/gtx/transform.hpp"
+#include "glm/glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/type_ptr.hpp>
 #include "VertexArray.h"
 #include "Shader.h"
 #include <iostream>
@@ -9,6 +13,11 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 void ShowMaxVertexSupported();
+void TransformMatrix();
+void TranslateMatrix();
+
+const int width = 800;
+const int height = 600;
 
 	int main() {
 
@@ -26,7 +35,7 @@ void ShowMaxVertexSupported();
 		};
 
 
-
+		
 		glfwInit();
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -62,6 +71,10 @@ void ShowMaxVertexSupported();
 		//tell glfw we want to call this function on every window by registering
 		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+		//configure global opengl state(z buffer)
+		//----------------------------------------------
+		glEnable(GL_DEPTH_TEST);
+
 		// DeltaTime variables
 		GLfloat deltaTime = 0.0f;
 		GLfloat lastFrame = 0.0f;
@@ -76,10 +89,60 @@ void ShowMaxVertexSupported();
 		};
 
 		float vertices[] = {
-			// positions         // colors
-			 0.5f, -0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  // bottom right
-			-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,  // bottom left
-			 0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 1.0f   // top 
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		};
+
+		glm::vec3 cubePositions[] = {
+			glm::vec3(0.0f,  0.0f,  0.0f),
+			glm::vec3(2.0f,  5.0f, -15.0f),
+			glm::vec3(-1.5f, -2.2f, -2.5f),
+			glm::vec3(-3.8f, -2.0f, -12.3f),
+			glm::vec3(2.4f, -0.4f, -3.5f),
+			glm::vec3(-1.7f,  3.0f, -7.5f),
+			glm::vec3(1.3f, -2.0f, -2.5f),
+			glm::vec3(1.5f,  2.0f, -2.5f),
+			glm::vec3(1.5f,  0.2f, -1.5f),
+			glm::vec3(-1.3f,  1.0f, -1.5f)
 		};
 
 		unsigned int VBO, VAO;
@@ -92,23 +155,24 @@ void ShowMaxVertexSupported();
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 		// position attribute
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 		// color attribute
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
 
 		//ShowMaxVertexSupported();
-			
 
+		
+
+		
+		
 		while (!glfwWindowShouldClose(window))
 		{
 			// calculate delta time
 			//GLfloat currentFrame = glfwGetTime();
 			//deltaTime = currentFrame - lastFrame;
 			//lastFrame = currentFrame;
-
-			
 
 			//input
 			processInput(window);
@@ -117,17 +181,71 @@ void ShowMaxVertexSupported();
 
 			//rendering here
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 			//update thing here
 			
 			shader.Use();
+
 			float offset = 0.5f;
 			shader.setFloat("xOffset", offset);
+			
 
+			#pragma region Camera
+
+			glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+
+			glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+			glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+
+
+			// Projection matrix: 45 degree field of view, 4:3 ratio, display range: 0.1 unit <-> 100 units
+			glm::mat4 projection = glm::perspective(glm::radians(50.0f), (float)width / (float)height, 0.1f, 100.0f);
+
+			//or if you want an ortho camera :
+			//glm::mat4 projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 100.0f); // In world coordinates
+
+			//camera matrix
+			glm::mat4 view = glm::lookAt(
+				glm::vec3(0, 3, 3), // Camera is at (4,3,3), in World Space
+				glm::vec3(0, 0, 0), // and looks at the origin
+				glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+			);
+
+			// Model matrix : an identity matrix (model will be at the origin)
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::rotate(model,(float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 0.0f, 1.0f));
+			
+			//retrieve the matrix uniform location
+			unsigned int modelLocation = glGetUniformLocation(shader.ID, "model");
+			unsigned int viewLocation = glGetUniformLocation(shader.ID, "view");
+			
+			//pass them to the shader 3 different way
+			glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+			glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &view[0][0]);
+
+			// note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+			shader.setMat4("projection", projection);
+
+			// Our ModelViewProjection : multiplication of our 3 matrices
+			//glm::mat4 mvp = projection * view * model; // Remember, matrix multiplication is the other way around
+
+			#pragma endregion Camera
+			
+			//render container
 			glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+			for (unsigned int i = 0; i < 10; i++)
+			{
+				// calculate the model matrix for each object and pass it to shader before drawing
+				glm::mat4 model = glm::mat4(1.0f);
+				model = glm::translate(model, cubePositions[i]);
+				float angle = 20.0f * i;
+				model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+				shader.setMat4("model", model);
+
+				glDrawArrays(GL_TRIANGLES, 0, 36);
+			}
 
 			//swap the buffer
 			glfwSwapBuffers(window);
@@ -155,6 +273,28 @@ void ShowMaxVertexSupported();
 		int nrAttributes;
 		glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 		std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
+	}
+
+	//homogeneous coordinates 
+	//if w == 1 then the vector (x,y,z,1) is a position in space
+	//if w == 0 then the vector (x,y,z,0) is a direction
+
+	void TransformMatrix(){
+		//Matrix * vertex in that order
+		glm::mat4 myMatrix;
+		glm::vec4 myVector;
+		// fill myMatrix and myVector somehow
+		glm::vec4 transformedVector = myMatrix * myVector; // Again, in this order ! this is important.
+	}
+
+	void TranslateMatrix(){
+		glm::mat4 myMatrix = glm::translate(glm::mat4(), glm::vec3(10.0f, 0.0f, 0.0f));
+		glm::vec4 myVector(10.0f, 10.0f, 10.0f, 0.0f);
+		glm::vec4 transformedVector = myMatrix * myVector; // guess the result
+
+
+		//identity matrix 
+		glm::mat4 myIndetityMat = glm::mat4(1.0f);
 	}
 
 
